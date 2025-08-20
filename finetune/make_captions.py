@@ -104,8 +104,16 @@ def main(args):
 
         with torch.no_grad():
             if args.beam_search:
+                # captions = model.generate(
+                #     imgs, sample=False, num_beams=args.num_beams, max_length=args.max_length, min_length=args.min_length
+                # )
                 captions = model.generate(
-                    imgs, sample=False, num_beams=args.num_beams, max_length=args.max_length, min_length=args.min_length
+                    pixel_values=imgs,  # oder imgs direkt, je nach BLIP-API
+                    do_sample=not args.beam_search,
+                    num_beams=args.num_beams if args.beam_search else 1,
+                    max_length=args.max_length,
+                    min_length=args.min_length,
+                    top_p=args.top_p if not args.beam_search else None,
                 )
             else:
                 captions = model.generate(
