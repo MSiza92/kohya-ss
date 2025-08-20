@@ -100,12 +100,12 @@ class BLIP_Decoder(nn.Module):
         
         self.visual_encoder, vision_width = create_vit(vit,image_size, vit_grad_ckpt, vit_ckpt_layer)
         # self.tokenizer = init_tokenizer() 
-        self.tokenizer = AutoTokenizer.from_pretrained('Salesforce/blip-base-caption') # oder ein anderes passendes Modell
+        self.tokenizer = AutoTokenizer.from_pretrained("Salesforce/blip-image-captioning-base") # oder ein anderes passendes Modell
         
         # med_config = BertConfig.from_json_file(med_config)
         # med_config.encoder_width = vision_width
         # self.text_decoder = BertLMHeadModel(config=med_config)
-        self.text_decoder = AutoModelForSeq2SeqLM.from_pretrained('Salesforce/blip-base-caption') 
+        self.text_decoder = AutoModelForSeq2SeqLM.from_pretrained("Salesforce/blip-image-captioning-base")
         
         self.prompt = prompt
         self.prompt_length = len(self.tokenizer(self.prompt).input_ids)-1
