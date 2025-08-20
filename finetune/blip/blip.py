@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore")
 # from models.med import BertConfig, BertModel, BertLMHeadModel
 from blip.vit import VisionTransformer, interpolate_pos_embed
 from blip.med import BertConfig, BertModel, BertLMHeadModel
-from transformers import BertTokenizer
+from transformers import BertTokenizer, AutoTokenizer, AutoModelForSeq2SeqLM
 
 import torch
 from torch import nn
@@ -99,10 +99,13 @@ class BLIP_Decoder(nn.Module):
         super().__init__()
         
         self.visual_encoder, vision_width = create_vit(vit,image_size, vit_grad_ckpt, vit_ckpt_layer)
-        self.tokenizer = init_tokenizer()   
-        med_config = BertConfig.from_json_file(med_config)
-        med_config.encoder_width = vision_width
-        self.text_decoder = BertLMHeadModel(config=med_config)    
+        # self.tokenizer = init_tokenizer() 
+        self.tokenizer = AutoTokenizer.from_pretrained('Salesforce/blip-base-caption') # oder ein anderes passendes Modell
+        
+        # med_config = BertConfig.from_json_file(med_config)
+        # med_config.encoder_width = vision_width
+        # self.text_decoder = BertLMHeadModel(config=med_config)
+        self.text_decoder = AutoModelForSeq2SeqLM.from_pretrained('Salesforce/blip-base-caption') 
         
         self.prompt = prompt
         self.prompt_length = len(self.tokenizer(self.prompt).input_ids)-1
